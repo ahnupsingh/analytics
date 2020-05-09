@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "428872800226",
+    "firebase_url": "https://analytics-d2b5e.firebaseio.com",
+    "project_id": "analytics-d2b5e",
+    "storage_bucket": "analytics-d2b5e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:428872800226:android:45050ad147081ac654cbbb",
+        "android_client_info": {
+          "package_name": "com.sevengenie.analytics"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "428872800226-ke5cug97nfadj95thj8p44btovcmdsvk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAToFei6juJOZAcBOIb6VyMOo8glezr0GY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "428872800226-ke5cug97nfadj95thj8p44btovcmdsvk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
