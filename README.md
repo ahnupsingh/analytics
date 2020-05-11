@@ -2,12 +2,12 @@
 
 
 Android Application with following integration:
-    Firebase SDK
+    Firebase SDK,
     Facebook SDK
     
 Includes:
-     Event Logging 
-     Set User Properties
+     Event Logging,
+     Set User Properties,
      Dynamic Links
  
  Requirements:
