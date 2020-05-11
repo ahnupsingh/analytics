@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
+
+import com.facebook.appevents.AppEventsConstants;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -21,6 +23,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,8 +36,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static android.Manifest.permission.READ_CONTACTS;
+
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
 
 /**
  * A login screen that offers login via email/password.
@@ -64,7 +72,37 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mFavouriteFoodView;
     private View mProgressView;
     private View mLoginFormView;
+    private TextView mStatusTextView;
     private FirebaseAnalytics mFirebaseAnalytics;
+    private AppEventsLogger logger;
+
+//    Facebook Logger
+    public void facebookLogEvent (String userId, String email, String password, String food) {
+        AppEventsLogger.setUserID(userId);
+        logger = AppEventsLogger.newLogger(this);
+        logger.logEvent("Custom Log Event (Anup)");
+
+        Bundle params = new Bundle();
+        params.putString("email", email);
+        params.putString("password", password);
+        params.putString("favourite_food", food);
+
+        logger.logEvent("custom_event",
+                54.23,
+                params);
+    }
+
+    public void firebaseLogEvent (String userId, String email, String password, String food) {
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        mFirebaseAnalytics.setUserId(userId);
+        Bundle bundle = new Bundle();
+        bundle.putString("user_id", "1");
+        bundle.putString("user_email", email);
+        bundle.putString("user_password", password);
+        mFirebaseAnalytics.logEvent("custom_event", bundle);
+        mFirebaseAnalytics.setUserProperty("favorite_food", food);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +110,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mStatusTextView = (TextView) findViewById(R.id.status);
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -150,7 +189,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Random random = new Random();
+        String userId = Integer.toString(Math.abs(random.nextInt()));
+
         if (mAuthTask != null) {
             return;
         }
@@ -164,12 +205,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String password = mPasswordView.getText().toString();
         String favouriteFood = mFavouriteFoodView.getText().toString();
 
-        Bundle bundle = new Bundle();
-        bundle.putString("user_id", "1");
-        bundle.putString("user_email", email);
-        bundle.putString("user_password", password);
-        mFirebaseAnalytics.logEvent("custom_event", bundle);
-        mFirebaseAnalytics.setUserProperty("favorite_food", favouriteFood);
+
+        firebaseLogEvent(userId, email, password, favouriteFood);
+        facebookLogEvent(userId, email, password, favouriteFood);
 
         boolean cancel = false;
         View focusView = null;
@@ -199,9 +237,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
+//            showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+//            mAuthTask.execute((Void) null);
+            mStatusTextView.setText("Your data has been logged. Your User Id is: " + userId);
         }
     }
 
